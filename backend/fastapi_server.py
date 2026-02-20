@@ -1,6 +1,5 @@
 from fastapi import FastAPI, File, UploadFile, HTTPException, WebSocket, WebSocketDisconnect
 from fastapi.responses import FileResponse, JSONResponse  # ADD JSONResponse
-from fastapi import WebSocketState  
 from fastapi.middleware.cors import CORSMiddleware
 from typing import Dict
 import librosa
@@ -194,12 +193,6 @@ async def websocket_echo(websocket: WebSocket, user_id: str):
 
 @app.websocket("/ws/{room_id}/{user_id}")
 async def websocket_room(websocket: WebSocket, room_id: str, user_id: str):
-    """
-    Real‑time room:
-    - Each client sends binary float32 PCM chunks
-    - Server applies fast denoising per chunk
-    - Cleaned audio is broadcast to the other users in the same room
-    """
     await websocket.accept()
     print(f"🔊 {user_id} joined room {room_id}")
 
@@ -210,31 +203,21 @@ async def websocket_room(websocket: WebSocket, room_id: str, user_id: str):
     try:
         while True:
             data = await websocket.receive_bytes()
-            # Interpret incoming bytes as float32 PCM in [-1, 1]
             audio = np.frombuffer(data, dtype=np.float32)
-
-            # Apply lightweight denoising
             cleaned = _basic_spectral_denoise(audio)
             out_bytes = cleaned.tobytes()
 
-            # Broadcast to all other users in the room
+            # Broadcast to others
             for uid, ws in list(rooms[room_id].items()):
-                if uid == user_id:
-                    continue
-                try:
-                    await ws.send_bytes(out_bytes)
-                except Exception:
-                    # Drop dead connections
+                if uid != user_id:
                     try:
-                        await ws.close()
-                    except Exception:
-                        pass
-                    rooms[room_id].pop(uid, None)
+                        await ws.send_bytes(out_bytes)
+                    except:
+                        rooms[room_id].pop(uid, None)
     except WebSocketDisconnect:
         print(f"🔇 {user_id} left room {room_id}")
         rooms[room_id].pop(user_id, None)
-        if not rooms[room_id]:
-            rooms.pop(room_id, None)
+
 
 
 if __name__ == "__main__":
