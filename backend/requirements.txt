@@ -3,10 +3,10 @@ uvicorn==0.24.0
 python-multipart==0.0.6
 pydub==0.25.1
 
-# CPU PyTorch FIRST (CRITICAL LINE)
+# CPU PyTorch FIRST
 --index-url https://download.pytorch.org/whl/cpu
 torch==2.10.0+cpu
 torchaudio==2.10.0+cpu
 
-# Demucs direct from GitHub (skips lameenc)
-https://github.com/facebookresearch/demucs/archive/v4.tar.gz
+# Demucs from PyPI (stable)
+demucs==4.0.1
