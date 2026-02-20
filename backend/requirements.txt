@@ -1,12 +1,12 @@
 fastapi==0.104.1
-uvicorn==0.24.0[standard]
+uvicorn==0.24.0
 python-multipart==0.0.6
 pydub==0.25.1
 
-# CPU PyTorch FIRST
+# CPU PyTorch FIRST (CRITICAL LINE)
 --index-url https://download.pytorch.org/whl/cpu
 torch==2.10.0+cpu
 torchaudio==2.10.0+cpu
 
-# Demucs direct GitHub (no lameenc)
+# Demucs direct from GitHub (skips lameenc)
 https://github.com/facebookresearch/demucs/archive/v4.tar.gz
