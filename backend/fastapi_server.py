@@ -1,11 +1,13 @@
 from fastapi import FastAPI, File, UploadFile, HTTPException, WebSocket, WebSocketDisconnect
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, JSONResponse  # ADD JSONResponse
+from fastapi import WebSocketState  
 from fastapi.middleware.cors import CORSMiddleware
 from typing import Dict
 import librosa
 import soundfile as sf
 import numpy as np
 import tempfile
+import asyncio  
 import os
 from pydub import AudioSegment
 from noisereduce import reduce_noise
