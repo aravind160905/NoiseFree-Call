@@ -2,11 +2,9 @@ fastapi==0.104.1
 uvicorn==0.24.0
 python-multipart==0.0.6
 pydub==0.25.1
+demucs==4.0.1
 
-# CPU PyTorch FIRST
---index-url https://download.pytorch.org/whl/cpu
+# PyTorch CPU LAST (only for torch/torchaudio)
+--extra-index-url https://download.pytorch.org/whl/cpu
 torch==2.10.0+cpu
 torchaudio==2.10.0+cpu
-
-# Demucs from PyPI (stable)
-demucs==4.0.1
